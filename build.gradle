@@ -1,0 +1,263 @@
+
+// Gradle build file for demonstration pipeline 
+// (c) Brent Laster 2016
+
+
+
+// set a default version string
+ext.setVersion='0.0.1-SNAPSHOT'
+
+// set a flag for whether we are running in Jenkins or not
+ext.runningInJenkins=0
+
+// if we have the semantic versions values set then use those
+
+if (hasProperty('MAJOR_VERSION') && hasProperty('MINOR_VERSION') && hasProperty('PATCH_VERSION') && hasProperty('BUILD_STAGE'))
+	{    setVersion = MAJOR_VERSION + '.' + MINOR_VERSION + '.' + PATCH_VERSION + '-' + BUILD_STAGE }
+
+// otherwise if have the SOURCE_BUILD_NUMBER set (as would be in Jenkins) then use that (and assume that we are running in Jenkins)
+
+else if (System.env.SOURCE_BUILD_NUMBER != null) 
+	{    setVersion = '0.0.' + System.env.SOURCE_BUILD_NUMBER + '-SNAPSHOT'
+	     runningInJenkins = 1
+        }
+
+
+subprojects {
+	
+	apply plugin: 'java'
+	apply plugin: 'eclipse-wtp'
+	apply plugin: 'jacoco'
+	
+	group = 'com.demo.pipeline'
+	version=setVersion
+	
+	
+
+	configurations.compile.transitive = true  // Make sure transitive project dependencies are resolved.
+
+
+	// set backwards compatibililty with 1.7 so we can use in things like tomcat 7
+
+	tasks.withType(JavaCompile) { sourceCompatibility = "1.7"; targetCompatibility = "1.7" } 
+
+	
+	 // if we think we're not running in Jenkins, then allow the mavenCentral repo to be used
+	 //  this allows us to run this outside of Jenkins
+	 //  in Jenkins, we want to use the Artifactory repository that Jenkins points us to
+	 //  note that we could also use the Artifactory plugin here
+		
+
+
+         if(! runningInJenkins)
+	 {
+	 	repositories {
+			mavenCentral()
+		}
+	 }
+
+ 
+    sourceSets {
+		integrationTest {
+			java {
+				compileClasspath += main.output + test.output
+				runtimeClasspath += main.output + test.output
+				srcDir file('src/integrationTest/java')
+			}
+			resources.srcDir file('src/integrationTest/resources')	
+		}
+	}
+	
+	sourceSets {
+		functionalTest {
+			java {
+				compileClasspath += main.output + integrationTest.output
+				runtimeClasspath += main.output + integrationTest.output
+				srcDir file('src/functionalTest/java')
+			}
+			resources.srcDir file('src/functionalTest/resources')	
+		}
+	}
+
+    configurations {
+		integrationTestCompile.extendsFrom testCompile
+		integrationTestRuntime.extendsFrom testRuntime
+	}
+	
+	configurations {
+		functionalTestCompile.extendsFrom integrationTestCompile
+		functionalTestRuntime.extendsFrom integrationTestRuntime
+	}
+	
+	dependencies {
+		compile 'mysql:mysql-connector-java:5.1.38'
+		compile "javax.ws.rs:jsr311-api:1.1.1" 
+		compile 'com.sun.jersey:jersey-server:1.19' 
+		compile 'com.sun.jersey:jersey-core:1.19' 
+	 	compile 'com.sun.jersey:jersey-client:1.19' 
+		compile 'com.sun.jersey:jersey-servlet:1.19' 
+		compile 'com.sun.jersey:jersey-json:1.19' 
+		compile 'com.fasterxml.jackson.core:jackson-core:2.6.3'
+		compile 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
+		compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.3'
+		compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.6.3'
+		compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.6.3'
+		compile 'org.owasp.esapi:esapi:2.0.1'
+	}
+		
+	dependencies {
+		testCompile 'junit:junit:4.11'
+		testCompile 'org.mockito:mockito-all:1.8.4'
+		testCompile 'commons-io:commons-io:2.4'
+		testCompile 'com.mockrunner:mockrunner-jdbc:1.1.1'
+		
+		// integrationTestCompile 'org.assertj:assertj-core:3.0.0'
+		integrationTestCompile 'org.dbunit:dbunit:2.5.1'
+		functionalTestCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+	}
+
+
+	jacoco {
+        	toolVersion = "0.7.4+"
+    	}
+
+	tasks.withType(Test) {
+		reports.html.destination = file("${reporting.baseDir}/${name}")
+		outputs.upToDateWhen { false }
+		
+	}
+
+
+	    
+	task integrationTest(type:Test){
+		environment 'MYSQL_ENV_MYSQL_DATABASE', 'registry_test'
+		testClassesDir = sourceSets.integrationTest.output.classesDir
+		classpath = sourceSets.integrationTest.runtimeClasspath
+			 
+	}
+
+
+
+
+
+	 task jacocoIntegrationTestReport(type: JacocoReport) {
+		sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+       		classDirectories =  files(sourceSets.main.output)
+
+		sourceDirectories += files(sourceSets.integrationTest.allSource.srcDirs)
+		classDirectories += files(sourceSets.integrationTest.allSource.srcDirs)
+		executionData integrationTest
+
+		 doLast {
+        		println "See report at: file://${reporting.baseDir.toURI().path}index.html"
+   		 }
+	}
+
+
+
+		
+}
+
+
+
+project(':dataaccess') {
+
+
+	dependencies {
+		compile project(':util')
+	}
+	configurations {
+    	testArtifacts.extendsFrom testRuntime
+	}
+	task testJar(type: Jar) {
+  	  classifier "test"
+    	from sourceSets.test.output
+	}
+	artifacts {
+   		 testArtifacts testJar
+	}
+} 
+ 
+project(':api') {
+	dependencies {
+		compile project(':dataaccess')
+		 testCompile project (path: ":dataaccess", configuration: 'testArtifacts')
+		 testCompile 'com.mockrunner:mockrunner-jdbc:1.1.1'
+	}
+	
+	task runTests(type: JavaExec, dependsOn: 'classes') {
+if (System.getProperty('DEBUG', 'false') == 'true') {
+jvmArgs '-Xdebug',
+'-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005'
+}
+}
+
+}
+ 
+
+project(':web') {
+
+	
+
+    apply plugin:'jetty'
+
+
+
+	jettyRun.httpPort=8086
+	jettyRun.contextPath="com.demo.pipeline"
+	
+
+
+	apply plugin:'war'
+	
+
+
+	apply plugin: 'eclipse-wtp'
+
+
+	dependencies {
+		compile project(':api')
+	}
+
+	// create a simple info file for packaging with our war
+
+	task createInfoFile << {
+	   def InfoFile = new File("web/app-info.txt")
+	   Properties props = new Properties()
+	   props.setProperty('version',version)
+           props.setProperty('disclaimer',"Covered under the Use At Your Own Risk guarantee. For workshop demos only.  All others beware!")
+	   props.store(InfoFile.newWriter(),null)
+        }
+ 
+	apply plugin: 'maven'
+
+	task createPom << { 
+	    pom { 
+        	project { 
+        		groupId 'com.demo.pipeline'
+		        artifactId project.name
+        		version "$version"
+        	}
+	    }.writeTo("pom.xml")
+	}
+
+	war {
+	  dependsOn createInfoFile, createPom
+	   baseName = "web"
+
+	  from('.') {
+		include 'app-info.txt'
+		into('WEB-INF/classes')
+          }
+	}
+	
+		
+	
+
+
+
+
+
+}
+
+	
