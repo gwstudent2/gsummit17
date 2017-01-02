@@ -121,9 +121,9 @@ subprojects {
 
 
 	// we need a specific version to work around a problem
-	jacoco {
-        	toolVersion = "0.7.7+"
-    	}
+	// jacoco {
+        // 	toolVersion = "0.7.7+"
+    	// }
 
 	// create tests in a standard location and always cause them to run
 	tasks.withType(Test) {
