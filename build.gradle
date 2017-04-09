@@ -1,6 +1,6 @@
 
 // Gradle build file for demonstration pipeline 
-// (c) Brent Laster 2016
+// (c) Brent Laster 2017
 
 
 
@@ -115,8 +115,7 @@ subprojects {
 		testCompile 'com.mockrunner:mockrunner-jdbc:1.1.1'
 		testCompile 'org.jacoco:org.jacoco.agent:0.7.4+'
 		
-		integrationTestCompile 'org.dbunit:dbunit:2.5.1'
-		functionalTestCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+		integrationTestCompile 'org.dbunit:dbunit:2.5.1'		
 	}
 
 
@@ -156,6 +155,14 @@ subprojects {
 		
 	}
 
+
+
+	// set an environment variable that we use to point to the database we want   
+	task functionalTest(type:Test){
+		testClassesDir = sourceSets.functionalTest.output.classesDir
+		classpath = sourceSets.functionalTest.runtimeClasspath
+			 
+	}
 
 
 		
@@ -215,6 +222,8 @@ project(':web') {
 
     dependencies {
 	compile project(':api')
+        testCompile'commons-io:commons-io:2.5'
+	testCompile 'junit:junit:4.11'
     }
 
     // create a simple info file for packaging with our war
@@ -255,3 +264,4 @@ project(':web') {
 }
 
 	
+
