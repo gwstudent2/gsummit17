@@ -1,12 +1,12 @@
-// File: src/test/java/com/demo/api/TestExample1.java
+// File: src/test/java/com/demo/api/TestExample37.java
 
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.concurrent.TimeUnit;
 
-public class TestExample1 {
+public class TestExample37 {
 
-  @Test public void example1() {
+  @Test public void example37() {
 try {
     Thread.sleep(5000);
 } catch(InterruptedException ex) {
