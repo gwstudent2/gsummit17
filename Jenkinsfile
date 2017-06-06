@@ -13,7 +13,7 @@ node ('worker_node1') {
 
 // * 2. modify step below to use shared-library gbuild3 routine
 
-      gbuild3 'clean compileJava -x test'
+      gbuild3 "clean compileJava -x test"
    }
    
 }
