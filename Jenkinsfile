@@ -14,7 +14,7 @@ node ('worker_node1') {
   
    stage('Build') {
 
-      gbuild3 "clean compileJava -x test"
+      gbuild3 'clean compileJava -x test'
    }
 
 stage('Unit Test') {
@@ -25,8 +25,8 @@ stage('Unit Test') {
 
                
 // * 2. Add commands here to unstash and do gradle tests for TestExample1*     
-    	       unstash testreqs
-	       gbuild3 "-Dsingle.test=TestExample1* test"          
+    	       unstash 'testreqs'
+	       gbuild3 '-Dsingle.test=TestExample1* test'          
 
             }},
             tester3: { node ('worker_node2'){
@@ -34,8 +34,8 @@ stage('Unit Test') {
                 step([$class: 'WsCleanup'])
 
 // * 3. Add commands here to unstash and do gradle tests for TestExample2*
-		unstash testreqs
-		gbuild3 "-Dsingle.test=TestExample2* test"
+		unstash 'testreqs'
+		gbuild3 '-Dsingle.test=TestExample2* test'
                 
 
             }},
