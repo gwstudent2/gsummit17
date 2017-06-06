@@ -1,0 +1,6 @@
+projectKey=workshop-com.demo.pipeline
+serverUrl=http://localhost:9000
+serverVersion=6.4.0.25310
+dashboardUrl=http://localhost:9000/dashboard/index/workshop-com.demo.pipeline
+ceTaskId=AVx-k_3UYX1wtf5TNB5H
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AVx-k_3UYX1wtf5TNB5H
