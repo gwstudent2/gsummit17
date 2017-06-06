@@ -8,7 +8,5 @@ node ('worker_node1') {
    }
 
 // * 1. Add build stage below
-   stage('Build') {
-        sh "'${tool 'gradle32'}/bin/gradle' build -x test"
-   }
+  
 }
