@@ -6,6 +6,7 @@ node ('worker_node1') {
         // Get code from our git repository
 	checkout scm
    }
-   // Add build stage here
+
+// * 1. Add build stage below
   
 }
