@@ -8,7 +8,7 @@ node ('worker_node1') {
 	checkout scm
 
 // * 1. Add stash step here
-	stash includes: 'api/**, dataaccess/**, build.gradle, settings.gradle', name: 'testreqs'
+	stash includes: 'api/**, dataaccess/**, util/**, build.gradle, settings.gradle', name: 'testreqs'
 
    }
   
