@@ -41,7 +41,7 @@ stage('Unit Test') {
 // * 1. Insert "withCredentials" command here
 withCredentials([usernamePassword(credentialsId: 'mysql', passwordVariable: 'MYSQL-PASS', usernameVariable: 'MYSQL-USER')]) {
     // some block
-    sh "mysql -u${MYSQL-USER} -p${MYSQL-PASS} registry_test < registry_test.sql"
+    sh "mysql -u${env.MYSQL-USER} -p${env.MYSQL-PASS} registry_test < registry_test.sql"
 }
 
 
