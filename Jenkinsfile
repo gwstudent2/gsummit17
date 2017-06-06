@@ -39,10 +39,14 @@ stage('Unit Test') {
     stage('Integration Test') {
 
 // * 1. Insert "withCredentials" command here
+withCredentials([usernamePassword(credentialsId: 'mysql', passwordVariable: 'MYSQL-PASS', usernameVariable: 'MYSQL-USER')]) {
+    // some block
+    sh "mysql -u${MYSQL-USER} -p${MYSQL-PASS} registry_test < registry_test.sql"
+}
 
 
 // * 2. Insert command here to run gradle integrationTest task
-         
+		gbuild3 'integrationTest'         
     }
    
 }
