@@ -45,13 +45,13 @@ stage('Unit Test') {
         withSonarQubeEnv('Local SonarQube') {
 
 // * 1. Insert command to invoke sonarqube scan
-
+		gradle sonarqube
         }
         timeout(time:10, unit:'MINUTES') {
 
 // * 2. Complete the command to wait for the quality gate 
 
-            def qg = ?
+            def qg = jenkins-sonar
             if (qg.status != 'OK') {
                 error "Pipeline aborted due to quality gate failure: ${qg.status}"
             }

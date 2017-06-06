@@ -3,6 +3,26 @@
 // (c) Brent Laster 2017
 
 
+// configure sonarqube settings
+
+plugins {
+  id "org.sonarqube" version "2.4"
+}
+
+description = 'Example of SonarQube Scanner for Gradle Usage'
+version = '1.0'
+
+sonarqube {
+    properties {
+        property 'sonar.projectName', 'ROAR :: (Workshop) Pipeline Demo'
+        property 'sonar.projectKey', 'workshop-com.demo.pipeline'
+        property 'sonar.projectVersion', '1.0'
+	property 'sonar.sources', 'api/src,dataaccess/src,util/src,web/src'
+	property 'sonar.language', 'java'
+	property 'sonar.sourceEncoding', 'UTF-8'
+    }
+}
+
 
 // set a default version string
 ext.setVersion='0.0.1-SNAPSHOT'
@@ -32,6 +52,7 @@ subprojects {
 	
 	group = 'com.demo.pipeline'
 	version=setVersion
+	
 	
 	
 
