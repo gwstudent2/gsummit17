@@ -92,7 +92,7 @@ stage('Unit Test') {
 
         // 3. Complete the command to do a clean and artifactory publish
 
-        artifactoryGradle.run rootDir: "/", buildFile: ?, tasks: ?, buildInfo: buildInfo
+        artifactoryGradle.run rootDir: "/", buildFile: 'build.gradle', tasks: 'clean artifactoryPublish' , buildInfo: buildInfo
         server.publishBuildInfo buildInfo
 
     }
