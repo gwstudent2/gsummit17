@@ -39,9 +39,9 @@ stage('Unit Test') {
     stage('Integration Test') {
 
 // * 1. Insert "withCredentials" command here
-withCredentials([usernamePassword(credentialsId: 'mysql', passwordVariable: 'MYSQL-PASS', usernameVariable: 'MYSQL-USER')]) {
+withCredentials([usernamePassword(credentialsId: 'mysql', passwordVariable: 'DBPASS', usernameVariable: 'DBUSER')]) {
     // some block
-    sh "mysql -u${env.MYSQL-USER} -p${env.MYSQL-PASS} registry_test < registry_test.sql"
+    sh "mysql -u${env.DBUSER} -p${env.DBPASS} registry_test < registry_test.sql"
 }
 
 
