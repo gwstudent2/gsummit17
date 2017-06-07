@@ -42,12 +42,12 @@ stage('Unit Test') {
         gbuild3 'integrationTest' 
     }
     stage('Analysis') {
-        withSonarQubeEnv('Local SonarQube') {
+        withSonarQubeEnv('LocalSonarQube') {
 
 // * 1. Insert command to invoke sonarqube scan
-		gbuild3 'sonarqube'
+		sh "/usr/share/gradle/bin/gradle sonarqube"
         }
-        timeout(time:10, unit:'MINUTES') {
+        timeout(time:5, unit:'MINUTES') {
 
 // * 2. Complete the command to wait for the quality gate 
 
