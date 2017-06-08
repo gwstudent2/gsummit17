@@ -42,11 +42,11 @@ stage('Unit Test') {
         gbuild3 'integrationTest' 
     }
     stage('Analysis') {
-        withSonarQubeEnv('LocalSonarQube') {
+        withSonarQubeEnv('Local SonarQube') {
 
 // * 1. Insert command to invoke sonarqube scan
 		sh "/usr/share/gradle/bin/gradle sonarqube"
-}
+
         
               //  timeout(time:5, unit:'MINUTES') {
 
@@ -55,8 +55,9 @@ stage('Unit Test') {
                     def qg = waitForQualityGate()
                     if (qg.status != 'OK') {
                       error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                  }
-               // }
+                    }
+		// }
+               
         }
         step([$class: 'JacocoPublisher',
             execPattern:'**/**.exec',
