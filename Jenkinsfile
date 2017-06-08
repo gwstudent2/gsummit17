@@ -46,15 +46,16 @@ stage('Unit Test') {
 
 // * 1. Insert command to invoke sonarqube scan
 		sh "/usr/share/gradle/bin/gradle sonarqube"
+}
         
               //  timeout(time:5, unit:'MINUTES') {
 
 // * 2. Complete the command to wait for the quality gate 
 
-                //    def qg = waitForQualityGate()
-                //    if (qg.status != 'OK') {
-                  //      error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                  //  }
+                    def qg = waitForQualityGate()
+                    if (qg.status != 'OK') {
+                      error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                  }
                // }
         }
         step([$class: 'JacocoPublisher',
