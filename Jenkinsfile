@@ -28,11 +28,11 @@ node ('worker_node1') {
   
    stage('Build') {
 
-   // 1. Add a step to build a docker image using the docker variable. It should produce an image named "gradle:4.0-rc-2", using /home/diyuser2/docker/Dockerfile
+// * 1. Add a step to build a docker image using the docker variable. It should produce an image named "gradle:4.0-rc-2", using /home/diyuser2/docker/Dockerfile
 
       
 
-   // 2. Add a step to use the docker image created above to run the -version option for gradle and then do the 'clean compileJava -x test' tasks
+// * 2. Add a step to use the docker image created above to run the -version option for gradle and then do the 'clean compileJava -x test' tasks
     
      
    }
