@@ -3,7 +3,7 @@
 
 @Library('Utilities2')_
 node ('worker_node1') {
-  stage('Parameters') {
+  
     def userInput
     stage('Parameters') {
        userInput = input message: 'Enter version changes (if any):', parameters: [string(defaultValue: '1', description: '', name: 'MAJOR_VERSION'), string(defaultValue: '1', description: '', name: 'MINOR_VERSION'), string(defaultValue: env.BUILD_NUMBER, description: '', name: 'PATCH_VERSION'), string(defaultValue: 'SNAPSHOT', description: '', name: 'BUILD_STAGE')]
@@ -12,7 +12,7 @@ node ('worker_node1') {
        patch_version = userInput.PATCH_VERSION
        build_stage = userInput.BUILD_STAGE
     }
-}
+
    stage('Source') {          
         // Get code from our git repository
 	checkout scm
