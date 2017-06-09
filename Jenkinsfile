@@ -1,14 +1,16 @@
 #!groovy
-// starting Jenkinsfile for Lab 1
+// Starting Jenkinsfile for Lab 1
 
 node ('worker_node1') {
+
    stage('Source') {          
+
         // Get code from our git repository
 	checkout scm
+	
    }
-
-// * 1. Add build stage below
-   stage('Build') {
-        sh "'${tool 'gradle32'}/bin/gradle' build -x test"
-   }
+	
+// * 1. Add build stage below that invokes our gradle3 tool and executes the build task but not the test task
+   
 }
+
