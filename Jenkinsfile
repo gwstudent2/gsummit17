@@ -3,6 +3,16 @@
 
 @Library('Utilities2')_
 node ('worker_node1') {
+  
+    def userInput
+    stage('Parameters') {
+       userInput = input message: 'Enter version changes (if any):', parameters: [string(defaultValue: '1', description: '', name: 'MAJOR_VERSION'), string(defaultValue: '1', description: '', name: 'MINOR_VERSION'), string(defaultValue: env.BUILD_NUMBER, description: '', name: 'PATCH_VERSION'), string(defaultValue: 'SNAPSHOT', description: '', name: 'BUILD_STAGE')]
+       major_version = userInput.MAJOR_VERSION
+       minor_version = userInput.MINOR_VERSION
+       patch_version = userInput.PATCH_VERSION
+       build_stage = userInput.BUILD_STAGE
+    }
+
    stage('Source') {          
         // Get code from our git repository
 	checkout scm
@@ -44,18 +54,23 @@ stage('Unit Test') {
     stage('Analysis') {
         withSonarQubeEnv('Local SonarQube') {
 
-	    // 1. Insert command to invoke sonarqube scan
+// * 1. Insert command to invoke sonarqube scan
+                     sh "/opt/sonar-runner/bin/sonar-runner -X -e"
 
-        }
-        timeout(time:10, unit:'MINUTES') {
 
-	    // 2. Complete the command to wait for the quality gate 
+                 }
+        
+                timeout(time:5, unit:'MINUTES') {
 
-            def qg = ?
-            if (qg.status != 'OK') {
-                error "Pipeline aborted due to quality gate failure: ${qg.status}"
-            }
-        }
+// * 2. Complete the command to wait for the quality gate 
+	
+                    def qg = waitForQualityGate()
+                   if (qg.status != 'OK') {
+                      error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                    }
+               }
+		               
+        
         step([$class: 'JacocoPublisher',
             execPattern:'**/**.exec',
             classPattern: '**/classes/main/com/demo/util,**/classes/main/com/demo/dao',
@@ -78,7 +93,7 @@ stage('Unit Test') {
             gbuild3 "-x test build assemble"
     }
     stage('Publish Artifacts'){
-        def  server = Artifactory.server "LocalArtifactory"
+        def  server = Artifactory.server "Local Artifactory"
         def artifactoryGradle = Artifactory.newGradleBuild()
         artifactoryGradle.tool = "gradle3"
         artifactoryGradle.deployer repo:'libs-snapshot-local', server: server
@@ -92,7 +107,7 @@ stage('Unit Test') {
 
         // 3. Complete the command to do a clean and artifactory publish
 
-        artifactoryGradle.run rootDir: "/", buildFile: ?, tasks: ?, buildInfo: buildInfo
+        artifactoryGradle.run rootDir: "/", buildFile: 'build.gradle', tasks: 'clean artifactoryPublish' , buildInfo: buildInfo
         server.publishBuildInfo buildInfo
 
     }

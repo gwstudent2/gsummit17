@@ -3,6 +3,12 @@
 // (c) Brent Laster 2017
 
 
+// configure sonarqube settings
+
+
+// Gradle build file for demonstration pipeline 
+// (c) Brent Laster 2017
+
 
 // set a default version string
 ext.setVersion='0.0.1-SNAPSHOT'
@@ -32,6 +38,7 @@ subprojects {
 	
 	group = 'com.demo.pipeline'
 	version=setVersion
+	
 	
 	
 
@@ -205,12 +212,13 @@ project(':web') {
 
 	
 
-    apply plugin:'jetty'
+    
+    apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
 
 
 
-    jettyRun.httpPort=8086
-    jettyRun.contextPath="com.demo.pipeline"
+    gretty.httpPort=8086
+    gretty.contextPath="com.demo.pipeline"
 	
 
     apply plugin:'war'
@@ -228,26 +236,31 @@ project(':web') {
 
     // create a simple info file for packaging with our war
 
-    task createInfoFile << {
+    task createInfoFile {
+       doLast {
 	   def InfoFile = new File("web/app-info.txt")
 	   Properties props = new Properties()
 	   props.setProperty('version',version)
            props.setProperty('disclaimer',"Covered under the Use At Your Own Risk guarantee. For workshop demos only.  All others beware!")
 	   props.store(InfoFile.newWriter(),null)
+	}
     }
  
     // only needed here because we have to force pom creation to work with Artifactory
     apply plugin: 'maven'
 
-    task createPom << { 
-	 		pom { 
-        			project { 
-        			groupId 'com.demo.pipeline'
-			        artifactId project.name
-        			version "$version"
-        		}
-		    }.writeTo("pom.xml")
-		}
+    task createPom { 
+	doLast {
+             pom { 
+        	project { 
+          	groupId 'com.demo.pipeline'
+	 	artifactId project.name
+        	version "$version"
+                }
+
+	     }.writeTo("pom.xml")
+	}
+     }
 
      
      // creating our war file is dependent on the two files we want to associate with it
