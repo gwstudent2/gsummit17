@@ -51,11 +51,11 @@ stage('Unit Test') {
               //  timeout(time:5, unit:'MINUTES') {
 
 // * 2. Complete the command to wait for the quality gate 
-
-                    def qg = waitForQualityGate()
-                    if (qg.status != 'OK') {
-                      error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                    }
+	
+                  //  def qg = waitForQualityGate()
+                  //  if (qg.status != 'OK') {
+                  //    error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                  //  }
 		               
         
         step([$class: 'JacocoPublisher',
