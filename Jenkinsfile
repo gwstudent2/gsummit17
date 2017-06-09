@@ -1,5 +1,5 @@
 #!groovy
-// Completed Jenkinsfile for Lab 3
+// Starting Jenkinsfile for Lab 3
 
 @Library('Utilities2')_
 node ('worker_node1') {
@@ -11,7 +11,7 @@ node ('worker_node1') {
 
 // 1. Add the stash step here from the Snippet Generator
 
-	stash includes: 'api/**, dataaccess/**, util/**, build.gradle, settings.gradle', name: 'ws-src'
+	
    }
   
    stage('Build') {
@@ -30,8 +30,7 @@ stage('Unit Test') {
 // * 2. Add commands here to unstash from the stash we created in the Source stage
 //      Add a command to use the shared library gradle routine to test the api test cases named TestExample1* 
                  	
-               unstash 'ws-src'
-	       gbuild3 '-D test.single=TestExample1* :api:test'
+           
 
 
             }},
@@ -42,8 +41,7 @@ stage('Unit Test') {
 // * 3. Add commands here to unstash from the stash we created in the Source stage
 //      Add a command to use the shared library gradle routine to test the api test cases named TestExample2* 
 
-                unstash 'ws-src'
-	        gbuild3 '-D test.single=TestExample2* :api:test'   
+                  
 
             }},
         )
