@@ -217,8 +217,8 @@ project(':web') {
 
 
 
-    jettyRun.httpPort=8086
-    jettyRun.contextPath="com.demo.pipeline"
+    gretty.httpPort=8086
+    gretty.contextPath="com.demo.pipeline"
 	
 
     apply plugin:'war'
