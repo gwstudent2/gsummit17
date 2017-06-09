@@ -20,8 +20,9 @@ node ('worker_node1') {
    }
   
    stage('Build') {
-      docker.build("gradle:3.2","-f /home/diyuser2/docker/Dockerfile /home/diyuser2/docker")
-      withDockerContainer('gradle:3.2') {
+      docker.build("gradle:4.0-rc-2","-f /home/diyuser2/docker/Dockerfile /home/diyuser2/docker")
+      withDockerContainer('gradle:4.0-rc-2') {
+	sh 'gradle -version'
 	sh 'gradle clean compileJava -x test'
       }
       // gbuild3 "clean compileJava -x test"
