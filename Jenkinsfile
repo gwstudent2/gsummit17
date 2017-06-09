@@ -48,7 +48,7 @@ stage('Unit Test') {
                      sh "/opt/sonar-runner/bin/sonar-runner -X -e"
 
 
-}
+                 }
         
                 timeout(time:5, unit:'MINUTES') {
 
@@ -58,6 +58,7 @@ stage('Unit Test') {
                    if (qg.status != 'OK') {
                       error "Pipeline aborted due to quality gate failure: ${qg.status}"
                     }
+               }
 		               
         
         step([$class: 'JacocoPublisher',
