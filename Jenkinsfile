@@ -1,5 +1,5 @@
 #!groovy
-// starting Jenkinsfile for Lab 5
+// starting Jenkinsfile for Lab 6
 
 @Library('Utilities2')_
 node ('worker_node1') {
@@ -20,8 +20,11 @@ node ('worker_node1') {
    }
   
    stage('Build') {
-
-      gbuild3 "clean compileJava -x test"
+      docker.build('gradle:3.2','.')
+      withDockerContainer('gradle:3.2') {
+	sh 'gradle clean compileJava -x test'
+      }
+      // gbuild3 "clean compileJava -x test"
    }
 stage('Unit Test') {
         parallel (
