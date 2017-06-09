@@ -93,7 +93,7 @@ stage('Unit Test') {
             gbuild3 "-x test build assemble"
     }
     stage('Publish Artifacts'){
-        def  server = Artifactory.server "LocalArtifactory"
+        def  server = Artifactory.server "Local Artifactory"
         def artifactoryGradle = Artifactory.newGradleBuild()
         artifactoryGradle.tool = "gradle3"
         artifactoryGradle.deployer repo:'libs-snapshot-local', server: server
