@@ -1,9 +1,11 @@
 #!groovy
-// starting Jenkins file for Lab 4
+// Starting Jenkinsfile for Lab 4
 
 @Library('Utilities2')_
 node ('worker_node1') {
+
    stage('Source') {          
+
         // Get code from our git repository
 	checkout scm
 	stash includes: 'api/**, dataaccess/**, util/**, build.gradle, settings.gradle', name: 'ws-src'
@@ -11,9 +13,12 @@ node ('worker_node1') {
   
    stage('Build') {
 
-      gbuild3 "clean compileJava -x test"
+       gbuild3 'clean compileJava -x test'
+
    }
+
 stage('Unit Test') {
+
         parallel (
            tester2: { node ('worker_node2'){
                // always run with a new workspace
@@ -32,21 +37,21 @@ stage('Unit Test') {
 	        gbuild3 '-D test.single=TestExample2* :api:test'   
 
             }},
-
-            )
-            
+        )
     }
+
     stage('Integration Test') {
 
-// * 1. Insert "withCredentials" command here
-withCredentials([usernamePassword(credentialsId: 'mysql', passwordVariable: 'DBPASS', usernameVariable: 'DBUSER')]) {
-    // some block
-    sh "mysql -u${env.DBUSER} -p${env.DBPASS} registry_test < registry_test.sql"
-}
 
+// * 1. Insert "withCredentials" step here to wrap the mysql command below
+
+            sh "mysql -u${env.DBUSER} -p${env.DBPASS} registry_test < registry_test.sql"
+        
 
 // * 2. Insert command here to run gradle integrationTest task
-		gbuild3 'integrationTest'         
+
+       
     }
+   
    
 }
