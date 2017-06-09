@@ -46,7 +46,7 @@ stage('Unit Test') {
 
 // * 1. Insert command to invoke sonarqube scan
 		sh "/usr/share/gradle/bin/gradle sonarqube"
-
+}
         
               //  timeout(time:5, unit:'MINUTES') {
 
@@ -56,9 +56,8 @@ stage('Unit Test') {
                     if (qg.status != 'OK') {
                       error "Pipeline aborted due to quality gate failure: ${qg.status}"
                     }
-		// }
-               
-        }
+		               
+        
         step([$class: 'JacocoPublisher',
             execPattern:'**/**.exec',
             classPattern: '**/classes/main/com/demo/util,**/classes/main/com/demo/dao',
