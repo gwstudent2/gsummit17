@@ -16,7 +16,7 @@ node ('worker_node1') {
    stage('Build') {
 
 // * 2. Modify the gradle build command below to use our 'gbuild3' shared library routine 
-       sh "${tool 'gradle3'}/bin/gradle clean compileJava -x test"
+       sh "'${tool 'gradle3'}/bin/gradle' clean compileJava -x test"
 
    }
 
