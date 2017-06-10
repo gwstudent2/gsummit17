@@ -8,7 +8,7 @@ public class TestExample5 {
 
   @Test public void example5() {
 try {
-    Thread.sleep(5000);
+    Thread.sleep(3000);
 } catch(InterruptedException ex) {
     Thread.currentThread().interrupt();
 }
