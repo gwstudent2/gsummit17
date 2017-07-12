@@ -63,7 +63,7 @@ stage('Unit Test') {
     stage('Integration Test') {
 
         withCredentials([usernamePassword(credentialsId: 'mysql-access', passwordVariable: 'DBPASS', usernameVariable: 'DBUSER')]) {
-            sh "mysql -u${env.DBUSER} -p${env.DBPASS} registry_test < registry_test.sql"
+            sh "mysql -u${DBUSER} -p${DBPASS} registry_test < registry_test.sql"
         }
 
         gbuild3 'integrationTest' 
