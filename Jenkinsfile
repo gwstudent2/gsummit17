@@ -8,7 +8,7 @@ node ('worker_node1') {
 
         // Get code from our git repository
 	checkout scm
-	stash includes: 'api/**, dataaccess/**, util/**, build.gradle, settings.gradle', name: 'ws-src'
+	stash includes: 'api/**, dataaccess/**, util/**, build.gradle, settings.gradle', name: 'testreqs'
    }
   
    stage('Build') {
@@ -24,7 +24,7 @@ stage('Unit Test') {
                // always run with a new workspace
                step([$class: 'WsCleanup'])
                  	
-               unstash 'ws-src'
+               unstash 'testreqs'
 	       gbuild3 '-D test.single=TestExample1* :api:test'
 
 
@@ -33,7 +33,7 @@ stage('Unit Test') {
                 // always run with a new workspace
                 step([$class: 'WsCleanup'])
 
-                unstash 'ws-src'
+                unstash 'testreqs'
 	        gbuild3 '-D test.single=TestExample2* :api:test'   
 
             }},
